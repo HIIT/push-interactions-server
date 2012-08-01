@@ -112,5 +112,20 @@ items = {
         }
 
         return new Item();
+    } , 
+    'Take a photo' : function() {
+        function Item() {
+
+        }
+
+        Item.prototype.display = function() {
+            return $('<div>', {html: 'Take a photo'} );
+        }
+
+        Item.prototype.code = function() {
+            return "$('<div>', {html: 'Take an image'} ).button().click( function(){ navigator.camera.getPicture( $.noop, $.noop ) } ).appendTo('body');";
+        }
+
+        return new Item();
     }
 }
