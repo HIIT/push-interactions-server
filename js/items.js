@@ -123,7 +123,7 @@ items = {
         }
 
         Item.prototype.code = function() {
-            return "$('<div>', {html: 'Take an image'} ).button().click( function(){ navigator.camera.getPicture( $.noop, $.noop ) } ).appendTo('body');";
+            return "$('<div>', {html: 'Take an image'} ).button().click( function(){ navigator.camera.getPicture( $.noop, $.noop, { quality : 75, destinationType : Camera.DestinationType.DATA_URL, sourceType : Camera.PictureSourceType.CAMERA } ) } ).appendTo('body');";
         }
 
         return new Item();
