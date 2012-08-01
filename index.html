@@ -17,7 +17,7 @@
     float: right;
 }
 
-#selectors {
+#menu {
     width: 20%;
     float: left;
 }
@@ -30,6 +30,11 @@
 var selected = [];
 
 $(document).ready( function(){
+
+    // fill in the selectos
+    $.each( items, function(key, value) {
+        $('<div>', { html: key, class: 'selectors'} ).appendTo('#selectors');
+    });
 
     $('.selectors').on('click', function() {
         var item = items[ $(this).html() ]();
@@ -69,16 +74,10 @@ $(document).ready( function(){
 
 </div>
 
+<div id='menu'>
 
 <div id='selectors'>
-
-<div class='selectors'>Generic text</div>
-
-<div class='selectors'>Poll</div>
-
-<div class='selectors'>Time selection</div>
-
-<div class='selectors'>Lunch company</div>
+</div>
 
 <hr/>
 
