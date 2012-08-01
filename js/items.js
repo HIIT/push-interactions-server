@@ -97,5 +97,20 @@ items = {
         }
 
         return new Item();
-    } 
+    } ,
+    'Vibrate phone' : function() {
+        function Item() {
+
+        }
+
+        Item.prototype.display = function() {
+            return $('<div>', {html: 'Vibrate phone'} );
+        }
+
+        Item.prototype.code = function() {
+            return 'navigator.notification.vibrate(2500);'
+        }
+
+        return new Item();
+    }
 }
