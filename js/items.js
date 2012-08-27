@@ -188,15 +188,18 @@ items = {
             var d = $('<div>', {html : 'Button' } );
             this.field = $('<input>');
             this.style = $('<input>', { value: 'btn btn-primary' } );
+            this.response = $('<input>', { value : 'Thanks' } );
             d.append( this.field );
             d.append( this.style );
+            d.append( this.response );
             return d;
         }
 
         Item.prototype.code = function(){
             var text = this.field.val();
             var style = this.style.val();
-            return "$('<button>', {  html :'" + text + "', type: 'button', class : '" + style + "' } ).appendTo('body');";
+            var ret = this.response.val();
+            return "$('<button>', {  html :'" + text + "', type: 'button', class : '" + style + "' } ).click( function(){ $(this).addClass('btn-link'); $(this).html('" + ret + "') } ).appendTo('body');";
         }
 
         return new Item();
