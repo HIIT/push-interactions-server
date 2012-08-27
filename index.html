@@ -44,15 +44,17 @@ $(document).ready( function(){
 
     $('.button').button();
 
+    var INIT = "$('body').html(''); $('<div>', {html: 'Ok, dismiss', class : 'btn btn-inverse', style: 'float: right;' } ).click( function() { $('body').html(''); device.exitApp(); } ).appendTo('body');"
+
     $('#code').on('click', function(){
         // TODO: fix to reduce etc
         // clear form
-        var text = "$('body').html('');";
+        var text = INIT;
         for( var i in selected ) {
             text += selected[i].code();
         }
 
-        $('#clear').click();
+        // $('#clear').click();
 
         // todo: submit to ajax
         $.post('./deploy/gcm.php', { msg : text } );
