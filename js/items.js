@@ -18,6 +18,51 @@ items = {
 
         return new Item();
     } ,
+    'Generic img' : function(){
+        function Item() {
+        }
+
+        Item.prototype.display = function() {
+            var d = $('<div>');
+            this.field = $('<input>');
+            this.float = $('<input>', { value: 'right' } );
+            d.append( this.field );
+            d.append( this.float );
+            return d;
+        }
+
+        Item.prototype.code = function(){
+            var url = this.field.val();
+            var float = this.float.val();
+            return "$('<img>', { src :'" + url +"', class : 'img-rounded', style: 'float:" + float + ";' } ).appendTo('body');";
+        }
+
+        return new Item();
+    } ,
+    'Generic link' : function(){
+        function Item() {
+        }
+
+        Item.prototype.display = function() {
+            var d = $('<div>');
+            this.field = $('<input>');
+            this.name = $('<input>');
+            this.style = $('<input>', { value: 'btn btn-info' } );
+            d.append( this.field );
+            d.append( this.name );
+            d.append( this.style );
+            return d;
+        }
+
+        Item.prototype.code = function(){
+            var url = this.field.val();
+            var name = this.name.val();
+            var style = this.style.val();
+            return "$('<a>', { href :'" + url +"', class : '" + style + "', html : '" + name + "' } ).appendTo('body');";
+        }
+
+        return new Item();
+    } ,
     'Poll' : function(){
         function Item() {
             this.question = '';
@@ -48,71 +93,78 @@ items = {
 
         Item.prototype.code = function(){
             var text = this.question.val();
-            var q = "$('<div>')";
+            var html = '';
             for( var i in this.answers ) {
                 var a = this.answers[i];
                 if( a.val() != '' ) {
-                    q += ".append($('<input>', { id : " + i + ", type: 'radio', name : 'radio-1' } ) )";
-                    q += ".append( $('<label>', { for: " + i + ", html: '" + a.val() + "'}))"; // end of append
+                    html += "<button class='btn'>" + a.val() + "</button>";
                 }
             }
-            q += ".buttonset().appendTo('body');"; // end of append
+            var q = "$('<div>', { class : 'btn-group', html : \"" + html + "\" } ).click( function(){ $(this).html('Thanks'); } ).appendTo('body');";
             return "$('<p>').html('" + text +"').appendTo('body');" + q;
         }
 
         return new Item();
     } ,
-    'Time selection' : function(){
+   'Checkbox' : function(){
         function Item() {
-            this.hours = '';
+            this.question = '';
+            this.answers = [];
         }
 
-        Item.prototype.display = function() {
-            var d = $('<div>', {html: 'How many hours will you stay?'} );
+        Item.prototype._answer = function(base) {
+            var ans = $('<input>');
+            this.answers.push( ans );
+            var self = this;
+            ans.on('focus', function(){
+                if( $(this).val() == '' ) {
+                    self._answer( base );
+                }
+            });
+            base.append( $('<li>').append( ans ) );
+        }
+     
+     Item.prototype.display = function() {
+            var d = $('<div>');
+            var l = $('<ul>');
+            this.question = $('<input>');
+            d.append( this.question );
+            d.append( l );
+            this._answer( l );
             return d;
         }
 
         Item.prototype.code = function(){
-            var t = "$('<p>').html('How many hours will you stay in office today?').appendTo('body');";
-            t += "$('<div>').slider({ min: 0, max: 10, step: 0.5, range: 'min', change : function(event, ui){ alert(ui.value); } }).appendTo('body');"
-            return t;
+            var text = this.question.val();
+            var html = '';
+            for( var i in this.answers ) {
+                var a = this.answers[i];
+                if( a.val() != '' ) {
+                    html += "<label class='checkbox'><input type='checkbox'>  " + a.val() + "</label>";
+                }
+            }
+            var q = "$('<div>', { class : 'btn-group', html : \"" + html + "\" } ).appendTo('body');";
+            return "$('<p>').html('" + text +"').appendTo('body');" + q;
         }
 
         return new Item();
-    } ,
-    'Lunch company' : function(){
+    },
+    'Text input' : function() {
         function Item() {
-            this.hours = '';
+
         }
 
         Item.prototype.display = function() {
-            var d = $('<div>', {html: 'Would you like lunch company?'} );
+            var d = $('<div>', {html: 'Write response'} );
             return d;
-        }
-
-        Item.prototype.code = function(){
-            var t = "$('<p>').html('Today cafeteria is serving Hernekeitto. Would you like some company?').appendTo('body');";
-            t += "$('<div>').append( $('<input>', { type: 'radio', name: 'lunch-attendance', id: 'lunch_yes' } ) ).append( $('<label>', { for: 'lunch_yes', html: 'Yes'})).append( $('<input>', { type: 'radio', name: 'lunch-attendance', id: 'lunch_no' } ) ).append( $('<label>', { for: 'lunch_no', html: 'No'})).buttonset().appendTo('body');"
-            return t;
-        }
-
-        return new Item();
-    } ,
-    'Vibrate phone' : function() {
-        function Item() {
-
-        }
-
-        Item.prototype.display = function() {
-            return $('<div>', {html: 'Vibrate phone'} );
         }
 
         Item.prototype.code = function() {
-            return 'navigator.notification.vibrate(2500);'
+            return "$('<textarea>', { rows : '5' } ).appendTo('body')"
         }
 
         return new Item();
-    } , 
+    },
     'Take a photo' : function() {
         function Item() {
 
@@ -123,9 +175,30 @@ items = {
         }
 
         Item.prototype.code = function() {
-            return "$('<div>', {html: 'Take an image'} ).button().click( function(){ navigator.camera.getPicture( $.noop, $.noop, { quality : 75, destinationType : Camera.DestinationType.DATA_URL, sourceType : Camera.PictureSourceType.CAMERA } ) } ).appendTo('body');";
+            return "$('<button>', {html: 'Take a photo', class: 'btn btn-primary btn-block'} ).click( function(){ navigator.camera.getPicture( function() { $(this).remove(); $(body).append('<p>Thanks</p>'); }, $.noop, { quality : 75, destinationType : Camera.DestinationType.DATA_URL, sourceType : Camera.PictureSourceType.CAMERA } ); } ).appendTo('body');";
         }
 
         return new Item();
-    }
+    } ,
+    'Button' : function(){
+        function Item() {
+        }
+
+        Item.prototype.display = function() {
+            var d = $('<div>', {html : 'Button' } );
+            this.field = $('<input>');
+            this.style = $('<input>', { value: 'btn btn-primary' } );
+            d.append( this.field );
+            d.append( this.style );
+            return d;
+        }
+
+        Item.prototype.code = function(){
+            var text = this.field.val();
+            var style = this.style.val();
+            return "$('<button>', {  html :'" + text + "', type: 'button', class : '" + style + "' } ).appendTo('body');";
+        }
+
+        return new Item();
+    } 
 }
